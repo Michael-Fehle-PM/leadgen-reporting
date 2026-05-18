@@ -1,6 +1,6 @@
 # Leadgen Reporting Suite
 
-Python scripts and Oracle SQL for automated lead generation reporting across two business units – military.com (MIL) and Fastweb (FW).
+Python scripts and Oracle SQL for automated lead generation reporting across two business units – two partner businesses – Client A and Client B – operating on a shared data infrastructure.
 
 The suite covers two reporting cadences:
 
@@ -15,19 +15,19 @@ Each script connects to an Oracle database, runs a parameterised SQL query, and 
 
 | File | Type | Description |
 |---|---|---|
-| `mil_daily_report.py` | Python | Daily leads report for military.com – one tab per date |
-| `fw_daily_report.py` | Python | Daily leads report for Fastweb – one tab per date |
-| `partner_leads_report.py` | Python | Partner performance report – MIL tab, FW tab, and combined Rollup |
-| `query_mil_daily.sql` | SQL | Oracle query for MIL daily report – parameterised by date range |
-| `query_fw_daily.sql` | SQL | Oracle query for FW daily report – parameterised by date range |
-| `query_mil.sql` | SQL | Oracle query for MIL partner performance – MTD, prior month, last 30 days |
-| `query_fw.sql` | SQL | Oracle query for FW partner performance – MTD, prior month, last 30 days |
+| `mil_daily_report.py` | Python | Daily leads report for Client A – one tab per date |
+| `fw_daily_report.py` | Python | Daily leads report for Client B – one tab per date |
+| `partner_leads_report.py` | Python | Partner performance report – Client A tab, Client B tab, and combined Rollup |
+| `query_mil_daily.sql` | SQL | Oracle query for Client A daily report – parameterised by date range |
+| `query_fw_daily.sql` | SQL | Oracle query for Client B daily report – parameterised by date range |
+| `query_mil.sql` | SQL | Oracle query for Client A partner performance – MTD, prior month, last 30 days |
+| `query_fw.sql` | SQL | Oracle query for Client B partner performance – MTD, prior month, last 30 days |
 
 ---
 
 ## Script 1 & 2 – Daily leads reports
 
-`mil_daily_report.py` and `fw_daily_report.py` produce a multi-tab Excel workbook with one tab per date in the requested range.
+`clienta_daily_report.py` and `clientb_daily_report.py` produce a multi-tab Excel workbook with one tab per date in the requested range.
 
 **Each tab contains:**
 
@@ -57,15 +57,15 @@ Max and Min Revenue are written as live Excel formulas, so the figures update if
 
 ```bash
 # Default: May 1 of current year through yesterday
-python mil_daily_report.py
-python fw_daily_report.py
+python clienta_daily_report.py
+python clientb_daily_report.py
 
 # Custom date range
-python mil_daily_report.py --start 2026-05-01 --end 2026-05-14
-python fw_daily_report.py  --start 2026-05-01 --end 2026-05-14
+python clienta_daily_report.py --start 2026-05-01 --end 2026-05-14
+python clientb_daily_report.py  --start 2026-05-01 --end 2026-05-14
 
 # Override UTC offset (default: auto-detected)
-python mil_daily_report.py --utc-offset -5
+python clienta_daily_report.py --utc-offset -5
 ```
 
 ---
@@ -74,17 +74,17 @@ python mil_daily_report.py --utc-offset -5
 
 `partner_leads_report.py` produces a single workbook with three tabs:
 
-**Tab 1 – MIL Partners**
+**Tab 1 – Client A Partners**
 
 Full breakdown including leads by traffic source (Google, Bing, Organic) and by product version (V1, V2), across three time windows: MTD, prior month, and last 30 days. Includes a forecast column that extrapolates current MTD run rate to a full-month projection.
 
-**Tab 2 – FW Partners**
+**Tab 2 – Client B Partners**
 
-Simplified view: MTD, prior month, last 30 days, forecast, CPL, and scrub rate. Fastweb leads do not carry Google/Bing click IDs so source breakdown is not applicable.
+Simplified view: MTD, prior month, last 30 days, forecast, CPL, and scrub rate. Client B leads do not carry Google/Bing click IDs so source breakdown is not applicable.
 
 **Tab 3 – Rollup**
 
-Combined view of all MIL and FW partners sorted alphabetically, with BU column (MIL/FW) and colour-coded rows. Useful for a single-page view across the full partner portfolio.
+Combined view of all Client A and Client B partners sorted alphabetically, with BU column (Client A/Client B) and colour-coded rows. Useful for a single-page view across the full partner portfolio.
 
 **Usage:**
 
@@ -93,7 +93,7 @@ Combined view of all MIL and FW partners sorted alphabetically, with BU column (
 python partner_leads_report.py
 
 # CSV mode – useful when no direct database access is available
-# Export query results to mil_results.csv and fw_results.csv first
+# Export query results to clienta_results.csv and clientb_results.csv first
 python partner_leads_report.py --csv
 ```
 
@@ -101,7 +101,7 @@ python partner_leads_report.py --csv
 
 ## The SQL
 
-### Daily queries (`query_mil_daily.sql`, `query_fw_daily.sql`)
+### Daily queries (`query_clienta_daily.sql`, `query_clientb_daily.sql`)
 
 Both daily queries share a common structure using Oracle CTEs:
 
@@ -121,14 +121,14 @@ Parameters are injected as Oracle bind variables at runtime:
 :utc_offset   -- e.g. -4 (EDT) or -5 (EST)
 ```
 
-### Performance queries (`query_mil.sql`, `query_fw.sql`)
+### Performance queries (`query_clienta.sql`, `query_clientb.sql`)
 
 These run without parameters – all date windows are calculated dynamically from `SYSDATE`.
 
 - **`date_params`** – calculates all date boundaries in one place: MTD start, prior month start/end, last 30 days start/end, days elapsed, and total days in month
 - **`agg_mtd` / `agg_prior` / `agg_last30`** – three separate aggregation CTEs, each filtered to its own date window, joined back to the partner list in the final SELECT
 
-The MIL query additionally classifies each lead by traffic source and product version:
+The Client A query additionally classifies each lead by traffic source and product version:
 
 ```sql
 -- Source classification
@@ -205,4 +205,4 @@ For production use, credentials should be managed via environment variables or a
 
 ## About
 
-Built by [Michael F](https://github.com/MichaelF-PM) during a product management role overseeing lead generation operations at military.com. Background in SaaS product management across martech and fintech, with a focus on data quality, ETL pipelines, and operational tooling.
+Built by [Michael F](https://github.com/MichaelF-PM) during a product management role overseeing lead generation operations at Client A. Background in SaaS product management across martech and fintech, with a focus on data quality, ETL pipelines, and operational tooling.
