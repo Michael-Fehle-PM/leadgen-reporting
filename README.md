@@ -15,13 +15,13 @@ Each script connects to an Oracle database, runs a parameterised SQL query, and 
 
 | File | Type | Description |
 |---|---|---|
-| `mil_daily_report.py` | Python | Daily leads report for Client A – one tab per date |
-| `fw_daily_report.py` | Python | Daily leads report for Client B – one tab per date |
+| `clienta_daily_report.py` | Python | Daily leads report for Client A – one tab per date |
+| `clientb_daily_report.py` | Python | Daily leads report for Client B – one tab per date |
 | `partner_leads_report.py` | Python | Partner performance report – Client A tab, Client B tab, and combined Rollup |
-| `query_mil_daily.sql` | SQL | Oracle query for Client A daily report – parameterised by date range |
-| `query_fw_daily.sql` | SQL | Oracle query for Client B daily report – parameterised by date range |
-| `query_mil.sql` | SQL | Oracle query for Client A partner performance – MTD, prior month, last 30 days |
-| `query_fw.sql` | SQL | Oracle query for Client B partner performance – MTD, prior month, last 30 days |
+| `query_clienta_daily.sql` | SQL | Oracle query for Client A daily report – parameterised by date range |
+| `query_clientb_daily.sql` | SQL | Oracle query for Client B daily report – parameterised by date range |
+| `query_clienta.sql` | SQL | Oracle query for Client A partner performance – MTD, prior month, last 30 days |
+| `query_clientb.sql` | SQL | Oracle query for Client B partner performance – MTD, prior month, last 30 days |
 
 ---
 
